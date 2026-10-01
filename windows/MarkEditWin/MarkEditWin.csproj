@@ -23,6 +23,18 @@
 
     <!-- The editor core is a single self-contained HTML file produced by vite. -->
     <CoreEditorIndexHtml>$(MSBuildThisFileDirectory)..\..\CoreEditor\dist\index.html</CoreEditorIndexHtml>
+
+    <!-- Keep the publish output to just the app, the PDB and the single file bundle. -->
+    <AllowedReferenceRelatedFileExtensions>none</AllowedReferenceRelatedFileExtensions>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <!--
+      Publish straight into the repository dist folder. Setting PublishDir here instead of passing
+      -o on the command line keeps the intermediate build output in bin\, otherwise the framework
+      assemblies end up next to the single file bundle. PublishDir must end with a separator.
+    -->
+    <PublishDir>$(MSBuildThisFileDirectory)..\..\dist\windows\</PublishDir>
   </PropertyGroup>
 
   <ItemGroup>

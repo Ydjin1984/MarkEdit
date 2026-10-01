@@ -26,8 +26,12 @@ cd windows
 build.cmd
 ```
 
-The script builds `CoreEditor` first, then publishes the app to `dist\windows`. Pass `framework` to
-produce a small framework-dependent build instead of the self-contained single file:
+The script builds `CoreEditor` first, publishes the app to `dist\windows`, and packages a release
+archive at `dist\MarkEdit-win-x64.zip` containing just the executable and the docs. `MarkEdit.exe` in
+the publish folder is a self-contained single file bundle and runs on its own.
+
+Pass `framework` to produce a small framework-dependent build instead of the self-contained single
+file:
 
 ```cmd
 build.cmd framework
