@@ -1,0 +1,69 @@
+name: Build Windows
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'windows/**'
+      - 'CoreEditor/**'
+      - '.github/workflows/build-windows.yml'
+  pull_request:
+    paths:
+      - 'windows/**'
+      - 'CoreEditor/**'
+      - '.github/workflows/build-windows.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build MarkEdit for Windows
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Build the editor core
+        working-directory: CoreEditor
+        run: |
+          node .yarn/releases/yarn-4.18.0.cjs install
+          node .yarn/releases/yarn-4.18.0.cjs build
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Publish MarkEdit for Windows
+        working-directory: windows
+        run: >
+          dotnet publish MarkEditWin/MarkEditWin.csproj
+          -c Release -r win-x64 --self-contained true
+          -p:PublishSingleFile=true
+          -p:EnableCompressionInSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -o ../dist/windows
+
+      - name: Run the bridge self-test
+        run: ./dist/windows/MarkEdit.exe --self-test windows/test/sample.md self-test.txt
+
+      - name: Show the self-test report
+        if: always()
+        run: Get-Content self-test.txt
+
+      - name: Package
+        run: |
+          New-Item -ItemType Directory -Force -Path package | Out-Null
+          Copy-Item dist/windows/MarkEdit.exe package/
+          Copy-Item windows/README.md package/README.md
+          Copy-Item LICENSE package/LICENSE
+          Copy-Item windows/test/sample.md package/sample.md
+          Compress-Archive -Path package/* -DestinationPath MarkEdit-win-x64.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MarkEdit-win-x64
+          path: MarkEdit-win-x64.zip
+          if-no-files-found: error

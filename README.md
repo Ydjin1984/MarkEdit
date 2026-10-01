@@ -6,9 +6,14 @@
 
 # MarkEdit
 
-[![](https://img.shields.io/badge/Platform-macOS_26.0+-blue?color=007bff)](https://github.com/MarkEdit-app/MarkEdit?tab=readme-ov-file#installation) [![](https://img.shields.io/github/downloads/MarkEdit-app/MarkEdit/total.svg?label=Downloads&color=f7821b)](https://github.com/MarkEdit-app/MarkEdit/releases) [![](https://github.com/MarkEdit-app/MarkEdit/actions/workflows/build-and-test.yml/badge.svg?branch=main)](https://github.com/MarkEdit-app/MarkEdit/actions/workflows/build-and-test.yml)
+[![](https://img.shields.io/badge/Platform-macOS_26.0+-blue?color=007bff)](https://github.com/MarkEdit-app/MarkEdit?tab=readme-ov-file#installation) [![](https://img.shields.io/badge/Platform-Windows_10+-blue?color=007bff)](#windows-version) [![](https://img.shields.io/github/downloads/MarkEdit-app/MarkEdit/total.svg?label=Downloads&color=f7821b)](https://github.com/MarkEdit-app/MarkEdit/releases) [![](https://github.com/MarkEdit-app/MarkEdit/actions/workflows/build-and-test.yml/badge.svg?branch=main)](https://github.com/MarkEdit-app/MarkEdit/actions/workflows/build-and-test.yml)
 
 MarkEdit is a free and **open-source** Markdown editor, for macOS. It's just like _TextEdit_ on Mac but dedicated to `Markdown`.
+
+> [!NOTE]
+> This repository is a fork of [MarkEdit](https://github.com/MarkEdit-app/MarkEdit) that adds a
+> **Windows version**. The macOS app is unchanged and still builds from the same sources; everything
+> Windows-specific lives in [`windows/`](./windows), see [Windows version](#windows-version).
 
 No bloat. Markdown editing done right in a 4 MB app that flies through million-line files.
 
@@ -20,6 +25,40 @@ _For perspective: at just 4 MB, MarkEdit is much smaller than Electron apps. Han
 > Discover our other free and open-source apps at [libremac.github.io](https://libremac.github.io/).
 >
 > Follow our Mastodon account [@MarkEditApp](https://mastodon.social/@MarkEditApp) for the latest updates.
+
+## Windows version
+
+This fork also ships a Windows build. It is not a rewrite: the Windows host runs the **same**
+`CoreEditor` bundle (the CodeMirror 6 editing core) and implements the same native bridge that the
+macOS app implements with AppKit.
+
+```
+CoreEditor (TypeScript)  ->  a single self-contained index.html
+        |
+        +-- macOS host:   Swift / AppKit / WKWebView
+        +-- Windows host: C# / WPF / WebView2
+```
+
+What you get on Windows:
+
+- The complete editing core: GFM highlighting, folding, multi-caret, autocompletion, tables, front
+  matter, smart quotes, typewriter and focus modes, all 16 themes with automatic light/dark switching
+- Open, save, save as, revert, recent files and autosave, with UTF-8/UTF-16/ANSI and LF/CRLF/CR support
+- Find and replace with case, whole word and regular expression options
+- Formatting menus, edit commands, table of contents, go to line and native context menus
+- The same [MarkEdit-api](https://github.com/MarkEdit-app/MarkEdit-api) scripting surface, plus
+  `editor.css`, `editor.js` and `scripts/*.js` customization
+
+Apple-only features (Apple Intelligence, the translation framework, the NLP word completion panel,
+Writing Tools and `NSFileVersion` history) report themselves as unavailable, so scripts that use them
+degrade gracefully instead of failing.
+
+Download `MarkEdit-<version>-win-x64.zip` from the [releases page](../../releases), unpack it and run
+`MarkEdit.exe`. The only prerequisite is the
+[Microsoft Edge WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/), which is
+preinstalled on Windows 11 and on most Windows 10 machines.
+
+To build it yourself, see [windows/README.md](./windows/README.md).
 
 ## Preview
 
@@ -56,6 +95,8 @@ Get `MarkEdit.dmg` from the <a href="https://github.com/MarkEdit-app/MarkEdit/re
 MarkEdit checks for updates automatically; you can also browse version history [here](https://github.com/MarkEdit-app/MarkEdit/releases).
 
 For older macOS: [macos-12](https://github.com/MarkEdit-app/MarkEdit/releases/tag/macos-12), [macos-13](https://github.com/MarkEdit-app/MarkEdit/releases/tag/macos-13), [macos-14](https://github.com/MarkEdit-app/MarkEdit/releases/tag/macos-14), [macos-15](https://github.com/MarkEdit-app/MarkEdit/releases/tag/macos-15).
+
+On Windows, get `MarkEdit-<version>-win-x64.zip` from the [releases page](../../releases), unpack it and run `MarkEdit.exe`. See [Windows version](#windows-version) for details.
 
 ## Using MarkEdit
 

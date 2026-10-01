@@ -5,3 +5,14 @@
 xcuserdata/
 Local.xcconfig
 *.local.entitlements
+
+## Windows host (.NET)
+windows/**/bin/
+windows/**/obj/
+*.user
+
+## Build output
+dist/
+
+## Local tooling
+.mimosa/
